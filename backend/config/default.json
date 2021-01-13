@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://samay:lollmaolol123@cluster0.ydur6.mongodb.net/test",
+    "jwtSecret": "samay_assignment1_jwt"
+}
