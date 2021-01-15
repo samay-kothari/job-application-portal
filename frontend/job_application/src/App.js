@@ -8,6 +8,7 @@ import AppNavbar from './components/AppNavbar'
 import LandingPage from './components/screens/landingPage'
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import ApplicantEdit from './components/screens/applicantEdit'
+import AddJob from './components/screens/addJob'
 
 class App extends Component {
   componentDidMount() {
@@ -18,9 +19,10 @@ class App extends Component {
     return (
       <Router>
         <Provider store = { store }>
-          <div className="App">
+          <div className="app">
               <Route path="/" component={LandingPage}/>
               <Route path="/applicantEdit" component={ApplicantEdit}/>
+              <Route path="/addJob" component={AddJob}/>
             <AppNavbar/>
           </div>
         </Provider>

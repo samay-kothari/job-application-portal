@@ -22,13 +22,15 @@ export default function(state = initialState, action){
                 isAuthenticated: true,
                 isLoading: false,
                 user: action.payload,
-                role: action.payload.user.role,
-                email: action.payload.user.email
+                role: action.payload.user!=null ? action.payload.user.role : null,
+                email: action.payload.user!=null ? action.payload.user.email : null 
             }
         case REGISTER_SUCCESS:
         case LOGIN_SUCCESS:
             localStorage.setItem('token', action.payload.token);
             localStorage.setItem('role', action.payload.user.role);
+            localStorage.setItem('email', action.payload.user.email)
+            localStorage.setItem('name', action.payload.user.name);
             return {
                 ...state,
                 ...action.payload,

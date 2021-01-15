@@ -1,8 +1,11 @@
 .box {
-    background:lightblue;
+    margin-top: 5%;
+    background-color:lightblue;
     position:absolute;
-    top:0px;
     right:0px;
-    bottom:0px;
     left:0px;
+}
+
+.app {
+    background-color: lightblue;
 }

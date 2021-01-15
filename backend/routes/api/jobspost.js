@@ -6,10 +6,10 @@ const Job = require('../../models/Jobs')
 
 router.post('/', (req,res) => {
     const { title, name, email, application_no, positions_no, deadline, required_skill, type, duration, salary } = req.body;
-    if(!name || !title || !email || !application_no || !positions_no || !deadline || !required_skill || !type || !duration || !salary ){
-        return res.status(400).json({ msg: 'Please enter all feilds' });
-    }
-
+    // if(!name || !title || !email || !application_no || !positions_no || !deadline || !required_skill || !type || !duration || !salary ){
+    //     return res.status(400).json({ msg: 'Please enter all feilds' });
+    // }
+    console.log(`${req.body}`)
     const newJob = new Job({
         title, name, email, application_no, positions_no, deadline, required_skill, type, duration, salary
     })
