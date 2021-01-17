@@ -18,7 +18,7 @@ class AddJob extends Component {
             positions_no: 0,
             deadline: null,
             required_skill: [''],
-            type: null,
+            type: 'Full-time',
             duration: null,
             salary: null,
         }

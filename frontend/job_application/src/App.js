@@ -9,6 +9,7 @@ import LandingPage from './components/screens/landingPage'
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import ApplicantEdit from './components/screens/applicantEdit'
 import AddJob from './components/screens/addJob'
+import ViewJobs from './components/screens/viewJob'
 
 class App extends Component {
   componentDidMount() {
@@ -23,6 +24,7 @@ class App extends Component {
               <Route path="/" component={LandingPage}/>
               <Route path="/applicantEdit" component={ApplicantEdit}/>
               <Route path="/addJob" component={AddJob}/>
+              <Route path="/viewJob" component={ViewJobs}/>
             <AppNavbar/>
           </div>
         </Provider>

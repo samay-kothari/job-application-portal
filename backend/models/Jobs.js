@@ -55,6 +55,14 @@ const JobSchema = new Schema({
     rating_sum: {
         type: Number,
         default: 0
+    },
+    accepted_applicants: {
+        type: Array,
+        default: []
+    },
+    pending_applicants: {
+        type: Array,
+        default: []
     }
 });
 

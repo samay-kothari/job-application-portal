@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import {register} from '../../actions/authActions';
 import { clearErrors } from "../../actions/errorActions";
 import { addApplicantData } from "../../actions/applicantActions"
+import axios from 'axios'
 
 class RegisterModal extends Component {
     state = {
@@ -63,7 +64,7 @@ class RegisterModal extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onSubmit = (e) => {
+    onSubmit = async (e) => {
         e.preventDefault()
         const { name, email, password, role} = this.state;
         const newUser = {
@@ -76,6 +77,21 @@ class RegisterModal extends Component {
         if(role == "Applicant"){
             this.props.addApplicantData(newUser)
         }
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        const body = JSON.stringify({ name, email, contact_number: '', bio: '' } )
+        console.log(`${body}`)
+        await axios.post('/api/recruiterProfile/', body, config)
+            .then( res => ({
+            })   
+            )
+            .catch(err => {
+                console.log(err.response);
+                alert('An error occurred! Try submitting the form again.');
+            });
     }
 
     render(){

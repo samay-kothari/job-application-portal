@@ -12,7 +12,8 @@ const db = config.get('mongoURI');
 mongoose
     .connect(db, {
         useNewUrlParser: true,
-        useCreateIndex: true
+        useCreateIndex: true,
+        useUnifiedTopology: true
     })
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err));
@@ -21,6 +22,8 @@ app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/jobspost', require('./routes/api/jobspost'));
 app.use('/api/applicantProfile', require('./routes/api/applicantProfile'))
+app.use('/api/recruiterProfile', require('./routes/api/recruiterProfile'))
+app.use('/api/viewJobs', require('./routes/api/viewJobs'))
 
 
 const port = process.env.PORT || 5000;
