@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import ApplicantEdit from './components/screens/applicantEdit'
 import AddJob from './components/screens/addJob'
 import ViewJobs from './components/screens/viewJob'
+import AddSopApply from './components/screens/addSopApply'
 
 class App extends Component {
   componentDidMount() {
@@ -25,6 +26,7 @@ class App extends Component {
               <Route path="/applicantEdit" component={ApplicantEdit}/>
               <Route path="/addJob" component={AddJob}/>
               <Route path="/viewJob" component={ViewJobs}/>
+              <Route path="/applyJob" component={AddSopApply}/>
             <AppNavbar/>
           </div>
         </Provider>

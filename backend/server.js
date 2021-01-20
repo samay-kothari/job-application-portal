@@ -24,6 +24,7 @@ app.use('/api/jobspost', require('./routes/api/jobspost'));
 app.use('/api/applicantProfile', require('./routes/api/applicantProfile'))
 app.use('/api/recruiterProfile', require('./routes/api/recruiterProfile'))
 app.use('/api/viewJobs', require('./routes/api/viewJobs'))
+app.use('/api/applicantJob', require('./routes/api/applicantJob'))
 
 
 const port = process.env.PORT || 5000;

@@ -1,5 +1,9 @@
+import axios from "axios";
 import { Component } from "react";
+import { Button, ListGroup, ListGroupItem } from "reactstrap";
 import '../../App.css'
+import moment from 'moment'
+import { Link } from 'react-router-dom' 
 
 class ApplicantVisit extends Component {
 
@@ -11,18 +15,69 @@ class ApplicantVisit extends Component {
     }
 
     componentDidMount (){
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
+        axios.get('/api/applicantJob/getJobs/')
+            .then(
+                res => {
+                    this.setState({
+                        jobs: res.data.jobs
+                    })   
+                }
+            )
     }
+
+    // applyForJob = (event, job, sop) => {
+    //     const config = {
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }
+    //     const jobapplication = {
+    //         job_id: job._id,
+    //         job_title: job.title,
+    //         applicant_name: localStorage.getItem('name'),
+    //         applicant_email: localStorage.getItem('email'),
+    //         recruiter_name: job.name,
+    //         recruiter_email: job.email,
+    //         sop: sop,
+    //         status: 'Applied'
+    //     }
+
+    // }
 
     render() {
         return (
             <div className = "box">
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
-                    <h1 style={{ color:'white'}}>Welcome Applicant</h1>
+                    <table style={{ border: '1px solid black', width: '90%' }}>
+                        <tbody>
+                            <tr style={{ border: '1px solid black'  }}>
+                                <th>Title</th>
+                                <th>Recruiter Name</th>
+                                <th>Job Rating</th>
+                                <th>Salary</th>
+                                <th>Duration(Months)</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
+                            </tr>
+                            { this.state.jobs != null ? this.state.jobs.map((job, index) =>
+                                // { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
+                                <tr style={{ border: '1px solid black'  }} key={index}>
+                                    <td>{job.title}</td>
+                                    <td>{job.name}</td>
+                                    <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
+                                    <td>{job.salary}</td>
+                                    <td>{job.duration}</td>
+                                    <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
+                                    <td><Link to={{ pathname: '/applyJob',
+                                        state: {
+                                            job: job
+                                        } }}>
+                                    <Button style={{ backgroundColor:'green'}}>Apply</Button>
+                                    </Link></td>
+                                </tr>
+                            ) : null }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         )
