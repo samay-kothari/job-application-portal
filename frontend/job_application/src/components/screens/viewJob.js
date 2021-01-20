@@ -11,13 +11,16 @@ class ViewJobs extends Component {
 
     constructor(props){
         super(props);
+        this.refresh = this.refresh.bind(this)
         this.state = {
             email: localStorage.getItem('email'),
             jobs: null,
             now: Date(),
             isEditing: false,
+            editingIndex: null
         }
     }
+
 
     componentDidMount (){
         const user = {
@@ -34,18 +37,24 @@ class ViewJobs extends Component {
             .then( res => {
                 this.setState({
                     jobs: res.data.jobs,
-                })
+                    }
+                )
             })
             .catch(err => {
                 console.log(err.response);
                 alert('An error occurred! Try submitting the form again.');
             });
-
     }
-
-    editJob = () => {
+    refresh = () => {
         this.setState({
-            isEditing: !this.state.isEditing
+            isEditing: false
+        })
+    }
+    editJob = (index, e) => {
+        console.log(`${JSON.stringify(index)}`)
+        this.setState({
+            isEditing: !this.state.isEditing,
+            editingIndex: index
         })
     }
 
@@ -87,7 +96,7 @@ class ViewJobs extends Component {
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
                     <ListGroup>
                         { this.state.jobs != null ? this.state.jobs.map((job, index) =>
-                            { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
+                            // { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
                                 <ListGroupItem>
                                     <Form>
                                         <Label>Title: {job.title}</Label><br/>
@@ -95,10 +104,9 @@ class ViewJobs extends Component {
                                         <Label>Number of Applicants: {job.pending_applicants.length}</Label><br/>
                                         <Label>Remaining Positions: {job.positions_no - job.accepted_applicants.length}</Label>
                                     </Form>
-                                    <center><Button onClick={this.editJob}>Edit</Button></center>
-                                    { this.state.isEditing ? <EditJobModal job = {job}/> : null}
+                                    <center><Button onClick={this.editJob.bind(this, index)}>Edit</Button></center>
+                                    { this.state.isEditing && index===this.state.editingIndex ? <EditJobModal job = {job} parentRefresh={this.refresh}/> : null}
                                 </ListGroupItem>
-                                : null }
                         ) : null }
                     </ListGroup>
                 </div>

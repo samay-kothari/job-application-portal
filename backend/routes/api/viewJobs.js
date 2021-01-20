@@ -14,6 +14,19 @@ router.post('/getJobs', (req, res) => {
         })
 })
 
+router.post('/editJob', (req, res) => {
+    const { _id, update } = req.body.togeather;
+    console.log(`${_id}`)
+    const filter = { _id: _id }
+    Jobs.findOneAndUpdate(filter, update)
+        .then(
+            updatedJob => {
+                if(!updatedJob) return res.status(400).json({ msg:'Can not update the job' })
+                res.json({updatedJob})
+            }
+        )
+})
+
 // router.post('/', (req, res) => {
 //     const { name, email, contact_number, bio } = req.body;
 //     console.log(`${name}`)

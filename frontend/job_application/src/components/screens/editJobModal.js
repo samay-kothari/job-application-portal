@@ -11,7 +11,9 @@ import {
     NavLink,
     Alert
 } from 'reactstrap';
+import { Redirect } from 'react-router-dom'
 import moment from 'moment'
+import axios from 'axios'
 
 
 class EditJobModal extends Component {
@@ -23,7 +25,8 @@ class EditJobModal extends Component {
             modal: true,
             application_no: this.props.job.application_no,
             positions_no: this.props.job.positions_no,
-            deadline: this.props.job.deadline
+            deadline: this.props.job.deadline,
+            redirect: null
         }
     }
 
@@ -37,13 +40,35 @@ class EditJobModal extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onSubmit = (e) => {
+    onSubmit = async(e) => {
         e.preventDefault()
-        
-        this.toggle()
+
+        const update = { application_no: this.state.application_no, positions_no:this.state.positions_no, deadline:this.state.deadline };
+        const togeather = { _id: this.state.job._id, update: update }
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        const body = JSON.stringify({ togeather })
+        console.log(`${body}`)
+        await axios.post('/api/viewJobs/editJob/', body, config)
+            .then( res => {
+                console.log("successfully updated")
+            })
+            .catch(err => {
+                console.log(err.response);
+                alert('An error occurred! Try submitting the form again.');
+            });
+        this.setState({
+            redirect: '/'
+        })
     }
 
     render(){
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
+        }
         return (
             <div>
                 <Modal
