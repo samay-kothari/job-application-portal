@@ -26,6 +26,19 @@ router.post('/postApplication', (req, res) => {
         } )
 })
 
+router.post('/getApplicantApplications', (req, res) => {
+    console.log(`lollmaolol`)
+    const { email } = req.body
+    const condition = {
+        applicant_email : email
+    }
+    JobApp.find(condition)
+        .then( applications => {
+            res.json({applications})
+        }
+    )
+})
+
 router.post('/updateJobData', (req, res) => {
     const { _id, update } = req.body.together;
     const filter = { _id: _id }

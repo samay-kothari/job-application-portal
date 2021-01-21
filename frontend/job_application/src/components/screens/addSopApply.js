@@ -6,9 +6,9 @@ import { Link, Redirect } from 'react-router-dom'
 import moment from 'moment'
 
 function AddSopApply(props){
-    const [job, setJob] = useState(props.location.state.job);
+    const [job, setJob] = useState(props.job);
     const [Sop, setSop] = useState('');
-    const [application_ID, setApplication_id] = useState('');
+    const [application_ID, setApplication_id] = useState(null);
     const [redirect, setRedirect] = useState(null);
 
     const applyForJob = async () => {
@@ -33,6 +33,7 @@ function AddSopApply(props){
         await axios.post('/api/applicantJob/postApplication/', body, config)
             .then( res=> {
                 setApplication_id(res.data.applicationData._id)
+                console.log(`${application_ID}`)
             } )
             .catch( err=> {
                 console.log(`${err}`)
@@ -51,7 +52,7 @@ function AddSopApply(props){
                     console.log(`${err}`)
                 }
             )
-        setRedirect('/')
+        props.reload()
     }
 
     const handleSopChange = (e) => {
@@ -61,7 +62,7 @@ function AddSopApply(props){
     if(redirect){
         return <Redirect to={redirect} />
     }
-
+    console.log('lollmaolol')
     return (
             <div className = "box">
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
