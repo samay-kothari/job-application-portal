@@ -25,25 +25,6 @@ class ApplicantVisit extends Component {
             )
     }
 
-    // applyForJob = (event, job, sop) => {
-    //     const config = {
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }
-    //     const jobapplication = {
-    //         job_id: job._id,
-    //         job_title: job.title,
-    //         applicant_name: localStorage.getItem('name'),
-    //         applicant_email: localStorage.getItem('email'),
-    //         recruiter_name: job.name,
-    //         recruiter_email: job.email,
-    //         sop: sop,
-    //         status: 'Applied'
-    //     }
-
-    // }
-
     render() {
         return (
             <div className = "box">
@@ -66,11 +47,13 @@ class ApplicantVisit extends Component {
                                     <td>{job.name}</td>
                                     <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
                                     <td>{job.salary}</td>
-                                    <td>{job.duration}</td>
+                                    <td>{job.pending_applicants.length}</td>
                                     <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
                                     <td><Link to={{ pathname: '/applyJob',
                                         state: {
-                                            job: job
+                                            job: job,
+                                            jobs: this.state.jobs,
+                                            index: index
                                         } }}>
                                     <Button style={{ backgroundColor:'green'}}>Apply</Button>
                                     </Link></td>

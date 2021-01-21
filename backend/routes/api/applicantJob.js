@@ -26,5 +26,15 @@ router.post('/postApplication', (req, res) => {
         } )
 })
 
-
+router.post('/updateJobData', (req, res) => {
+    const { _id, update } = req.body.together;
+    const filter = { _id: _id }
+    Jobs.findByIdAndUpdate(filter, update)
+        .then(
+            updatedJob => {
+                if(!updatedJob) return res.status(400).json({ msg:'Can not update the job' })
+                res.json({updatedJob})
+            }
+        )
+})
 module.exports = router;
