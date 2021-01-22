@@ -52,7 +52,7 @@ function AddSopApply(props){
                     console.log(`${err}`)
                 }
             )
-        props.reload()
+        await props.reload()
     }
 
     const handleSopChange = (e) => {

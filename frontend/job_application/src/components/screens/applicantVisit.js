@@ -10,7 +10,7 @@ function ApplicantVisit(){
     const [ jobs, setJobs ] = useState(null);
     const [ isApplying, setIsApplying ] = useState(false)
     const [ isApplyingIndex, setIsApplyingIndex ] = useState(null)
-    const [ applicantApplications, setApplicantApplications ] = useState(null)
+    const [ applicantApplications, setApplicantApplications ] = useState([])
     useEffect(() => {
         const config = {
             headers: {
@@ -36,12 +36,23 @@ function ApplicantVisit(){
         setIsApplyingIndex(index);
     }
     const reloadJobs = async() => {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
         await axios.get('/api/applicantJob/getJobs/')
         .then(
             res => {
                 setJobs(res.data.jobs) 
             }
         )
+        const data = { email: localStorage.getItem('email') }
+        const body = JSON.stringify(data)
+        await axios.post('/api/applicantJob/getApplicantApplications/', body, config)
+            .then( res => {
+                setApplicantApplications(res.data.applications)
+            })
         setIsApplyingIndex(null)
         setIsApplying(false)
     }
@@ -71,8 +82,45 @@ function ApplicantVisit(){
                             <th>Deadline</th>
                             <th>Status</th>
                         </tr>
-                        { jobs != null ? jobs.map((job, index) =>
-                            // { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
+                        {
+                            jobs != null ? jobs.map((job, index) => {
+                                {
+                                    return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) 
+                                    ? handleCheck(job) 
+                                        ?   applicantApplications!= null 
+                                            ? applicantApplications.map((item, index) => {
+                                                return job._id === item.job_id && item.status!="Rejected" ? (
+                                                <tr>
+                                                    <td>{job.title}</td>
+                                                    <td>{job.name}</td>
+                                                    <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
+                                                    <td>{job.salary}</td>
+                                                    <td>{job.duration}</td>
+                                                    <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
+                                                    {item.status === "Applied" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> : null}
+                                                </tr> 
+                                                ) : null
+                                            }) 
+                                            : null
+                                        :  (<tr>
+                                                <td>{job.title}</td>
+                                                <td>{job.name}</td>
+                                                <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
+                                                <td>{job.salary}</td>
+                                                <td>{job.duration}</td>
+                                                <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
+                                                <td>
+                                                <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
+                                                { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
+                                                </td>
+                                            </tr>)
+                                    : null
+
+                                }
+                            }) : null
+                        }
+                        {/* { jobs != null ? jobs.map((job, index) =>
+                            { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
                                 (<tr style={{ border: '1px solid black'  }} key={index}>
                                     <td>{job.title}</td>
                                     <td>{job.name}</td>
@@ -90,8 +138,9 @@ function ApplicantVisit(){
                                             { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
                                         </td>
                                     }
-                                </tr>) 
-                        ) : null }
+                                </tr>) :null
+                            } 
+                        ) : null } */}
                     </tbody>
                 </table>
             </div>
