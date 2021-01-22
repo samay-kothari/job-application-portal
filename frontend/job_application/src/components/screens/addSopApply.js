@@ -73,7 +73,10 @@ function AddSopApply(props){
                         <textarea class="form-control" type="textarea" 
                             onChange={handleSopChange}
                             /><br/>
-                        <Button style={{backgroundColor: "green"}} onClick={applyForJob}>Apply</Button>
+                        <center>
+                            <Button style={{backgroundColor: "green", marginRight:'100px'}} onClick={applyForJob}>Apply</Button>
+                            <Button style={{backgroundColor: "red"}} onClick={props.reload}>Cancel</Button>
+                        </center>
                     </Form>
                 </div>
             </div>

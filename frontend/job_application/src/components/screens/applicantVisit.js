@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Component, useState, useEffect } from "react";
-import { Button, ListGroup, ListGroupItem, Label } from "reactstrap";
+import { Button, ListGroup, ListGroupItem, Label, Form, FormGroup } from "reactstrap";
 import '../../App.css'
 import moment from 'moment'
 import { Link } from 'react-router-dom' 
@@ -8,9 +8,14 @@ import AddSopApply from "./addSopApply";
 
 function ApplicantVisit(){
     const [ jobs, setJobs ] = useState(null);
+    const [ jobsForSearch, setJobsForSearch ] = useState(null);
     const [ isApplying, setIsApplying ] = useState(false)
     const [ isApplyingIndex, setIsApplyingIndex ] = useState(null)
     const [ applicantApplications, setApplicantApplications ] = useState([])
+    const [ applicationLimit, setApplicationLimit ] = useState(false)
+    const [ searchInput, setSearchInput ] = useState('')
+    const [ sortOrder, setSortOrder ] = useState('ascending')
+    const [ sortAttribute, setSortAttribute ] = useState('salary')
     useEffect(() => {
         const config = {
             headers: {
@@ -20,7 +25,8 @@ function ApplicantVisit(){
         axios.get('/api/applicantJob/getJobs/')
             .then(
                 res => {
-                    setJobs(res.data.jobs) 
+                    setJobs(res.data.jobs)
+                    setJobsForSearch(res.data.jobs)
                 }
             )
         const data = { email: localStorage.getItem('email') }
@@ -32,8 +38,19 @@ function ApplicantVisit(){
     }, []);
     const callEditing = (index, event) =>{
         console.log(`${index}`)
-        setIsApplying(true);
-        setIsApplyingIndex(index);
+        var i;
+        var activeApplication = 0;
+        for( i = 0; i<applicantApplications.length ; i++ ){
+            if(applicantApplications[i].status==="Applied"){
+                activeApplication += 1;
+            }
+        }
+        if(activeApplication >= 10){
+            setApplicationLimit(true)
+        } else{
+            setIsApplying(true);
+            setIsApplyingIndex(index);
+        }
     }
     const reloadJobs = async() => {
         const config = {
@@ -44,7 +61,8 @@ function ApplicantVisit(){
         await axios.get('/api/applicantJob/getJobs/')
         .then(
             res => {
-                setJobs(res.data.jobs) 
+                setJobs(res.data.jobs)
+                setJobsForSearch(res.data.jobs) 
             }
         )
         const data = { email: localStorage.getItem('email') }
@@ -56,93 +74,150 @@ function ApplicantVisit(){
         setIsApplyingIndex(null)
         setIsApplying(false)
     }
-
+    const updateInput = (input) => {
+        const filtered = jobs.filter(job => {
+            return job.title.toLowerCase().includes(input.toLowerCase())
+        })
+        setSearchInput(input);
+        setJobsForSearch(filtered);
+    }
     const handleCheck = (job) => {
         return applicantApplications.some(item => job._id === item.job_id);
     }
-    // if(applicantApplications!=null){
-    //     var i;
-    //     for(i = 0; i < applicantApplications.length ; i++){
-    //         console.log(`${i} ${applicantApplications[i].status}`)
-    //         // setAppliedJobIds(appliedJobIds.concat([[applicantApplications[i].job_id, applicantApplications[i].status]]))
-    //     }
-    // }
 
+    const sortArray = (type, order) => {
+        const types = {
+          salary: 'salary',
+          duration: 'duration',
+          rating: 'rating_sum',
+        };
+        const sortProperty = types[type];
+        var sorted;
+        if(sortProperty === 'rating_sum'){
+            sorted = [...jobsForSearch].sort((a, b) => b[sortProperty]/b['number_of_ratings'] - a[sortProperty]/a['number_of_ratings']);
+        }else{
+            sorted = [...jobsForSearch].sort((a, b) => b[sortProperty] - a[sortProperty]);
+        }
+        console.log(sorted);
+        setSortAttribute(sortProperty)
+        if(order === 'descending'){
+            setJobsForSearch(sorted);
+        }else{
+            setJobsForSearch(sorted.concat().reverse());
+        }
+    };
+
+    const changeSort = type => {
+        setSortOrder(type)
+        if(type === 'ascending'){
+            sortArray(sortAttribute, 'ascending')
+        }else{
+            sortArray(sortAttribute, 'descending')
+        }
+    }
+
+    const BarStyling = {width:"20rem",background:"#F2F1F9", border:"none", padding:"0.5rem"};
     return (
         <div className = "box">
             <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
-                <table style={{ border: '1px solid black', width: '90%' }}>
-                    <tbody>
-                        <tr style={{ border: '1px solid black'  }}>
-                            <th>Title</th>
-                            <th>Recruiter Name</th>
-                            <th>Job Rating</th>
-                            <th>Salary</th>
-                            <th>Duration (Months)</th>
-                            <th>Deadline</th>
-                            <th>Status</th>
-                        </tr>
-                        {
-                            jobs != null ? jobs.map((job, index) => {
-                                {
-                                    return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) 
-                                    ? handleCheck(job) 
-                                        ?   applicantApplications!= null 
-                                            ? applicantApplications.map((item, index) => {
-                                                return job._id === item.job_id && item.status!="Rejected" ? (
-                                                <tr>
-                                                    <td>{job.title}</td>
-                                                    <td>{job.name}</td>
-                                                    <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
-                                                    <td>{job.salary}</td>
-                                                    <td>{job.duration}</td>
-                                                    <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
-                                                    {item.status === "Applied" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> : null}
-                                                </tr> 
-                                                ) : null
-                                            }) 
-                                            : null
-                                        :  (<tr>
+                <center>
+                    <Form>
+                        <FormGroup>
+                            <Label style={{marginRight:'40px'}}>Search:</Label>
+                            <input 
+                                style={BarStyling}
+                                key="random1"
+                                value={searchInput}
+                                placeholder={"Search Title"}
+                                onChange={(e) => updateInput(e.target.value)}
+                                /> <br/><br/>
+                            <Label style={{marginRight:'40px'}}>Sort:</Label>
+                            <select onChange={(e) => sortArray(e.target.value, sortOrder)}>
+                                <option value="salary" >Salary</option>
+                                <option value="duration">Duration</option>
+                                <option value="rating">Rating</option>
+                            </select>
+                            <select onChange={(e) => changeSort(e.target.value)}>
+                                <option value="ascending">Ascending</option>
+                                <option value="descending">Descending</option>
+                            </select>
+                            <br/><br/>
+                            { applicationLimit ? <div><h1 style={{color: "red"}}> Limit of Applications Reached </h1></div> : null }
+                            <table style={{ border: '1px solid black', width: '90%' }}>
+                                <tbody>
+                                    <tr style={{ border: '1px solid black'  }}>
+                                        <th>Title</th>
+                                        <th>Recruiter Name</th>
+                                        <th>Job Rating</th>
+                                        <th>Salary</th>
+                                        <th>Duration (Months)</th>
+                                        <th>Deadline</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    {
+                                        jobsForSearch != null ? jobsForSearch.map((job, index) => {
+                                            {
+                                                return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) 
+                                                ? handleCheck(job) 
+                                                    ?   applicantApplications!= null 
+                                                        ? applicantApplications.map((item, index) => {
+                                                            return job._id === item.job_id && item.status!="Rejected" ? (
+                                                            <tr>
+                                                                <td>{job.title}</td>
+                                                                <td>{job.name}</td>
+                                                                <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
+                                                                <td>{job.salary}</td>
+                                                                <td>{job.duration}</td>
+                                                                <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
+                                                                {item.status === "Applied" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> : null}
+                                                            </tr> 
+                                                            ) : null
+                                                        }) 
+                                                        : null
+                                                    :  (<tr>
+                                                            <td>{job.title}</td>
+                                                            <td>{job.name}</td>
+                                                            <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
+                                                            <td>{job.salary}</td>
+                                                            <td>{job.duration}</td>
+                                                            <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
+                                                            <td>
+                                                            <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
+                                                            { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
+                                                            </td>
+                                                        </tr>)
+                                                : null
+
+                                            }
+                                        }) : null
+                                    }
+                                    {/* { jobs != null ? jobs.map((job, index) =>
+                                        { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
+                                            (<tr style={{ border: '1px solid black'  }} key={index}>
                                                 <td>{job.title}</td>
                                                 <td>{job.name}</td>
                                                 <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
                                                 <td>{job.salary}</td>
                                                 <td>{job.duration}</td>
                                                 <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
-                                                <td>
-                                                <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
-                                                { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
-                                                </td>
-                                            </tr>)
-                                    : null
-
-                                }
-                            }) : null
-                        }
-                        {/* { jobs != null ? jobs.map((job, index) =>
-                            { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
-                                (<tr style={{ border: '1px solid black'  }} key={index}>
-                                    <td>{job.title}</td>
-                                    <td>{job.name}</td>
-                                    <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
-                                    <td>{job.salary}</td>
-                                    <td>{job.duration}</td>
-                                    <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
-                                    { handleCheck(job) ? applicantApplications!=null ? applicantApplications.map((item, index) => {
-                                        return item.job_id === job._id && item.status === "Applied" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> 
-                                        : item.job_id === job._id && item.status === "Rejected" ? <td><Button style={{ color: "white", backgroundColor:"red" }} >{item.status}</Button></td> 
-                                        : null
-                                    }) : null : job.pending_applicants.length >= job.application_no || job.accepted_applicants.length >= job.positions_no ? <td><Button style={{ color: "red", backgroundColor:"white" }} >Full</Button></td>
-                                            : <td>
-                                            <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
-                                            { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
-                                        </td>
-                                    }
-                                </tr>) :null
-                            } 
-                        ) : null } */}
-                    </tbody>
-                </table>
+                                                { handleCheck(job) ? applicantApplications!=null ? applicantApplications.map((item, index) => {
+                                                    return item.job_id === job._id && item.status === "Applied" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> 
+                                                    : item.job_id === job._id && item.status === "Rejected" ? <td><Button style={{ color: "white", backgroundColor:"red" }} >{item.status}</Button></td> 
+                                                    : null
+                                                }) : null : job.pending_applicants.length >= job.application_no || job.accepted_applicants.length >= job.positions_no ? <td><Button style={{ color: "red", backgroundColor:"white" }} >Full</Button></td>
+                                                        : <td>
+                                                        <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
+                                                        { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
+                                                    </td>
+                                                }
+                                            </tr>) :null
+                                        } 
+                                    ) : null } */}
+                                </tbody>
+                            </table>
+                        </FormGroup>
+                    </Form>
+                </center>
             </div>
         </div>
     )
