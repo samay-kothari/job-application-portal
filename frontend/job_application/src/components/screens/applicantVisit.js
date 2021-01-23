@@ -16,6 +16,14 @@ function ApplicantVisit(){
     const [ searchInput, setSearchInput ] = useState('')
     const [ sortOrder, setSortOrder ] = useState('ascending')
     const [ sortAttribute, setSortAttribute ] = useState('salary')
+
+    const [ filterSalaryStart, setFilterSalaryStart ] = useState(0)
+    const [ filterSalaryEnd, setFilterSalaryEnd ] = useState(Infinity)
+
+    const [ typeFilter, setFilterType ] = useState('none')
+
+    const [ durationFilter, setDurationFilter ] = useState(7)
+
     useEffect(() => {
         const config = {
             headers: {
@@ -116,6 +124,58 @@ function ApplicantVisit(){
         }
     }
 
+    const applyAllFilters = () => {
+        var filteredJobs
+        if(typeFilter === "none"){
+            filteredJobs = [...jobs]
+        }else{
+            filteredJobs = [...jobs].filter(job => {
+                return job.type.includes(typeFilter)
+            })
+        }
+        filteredJobs = filteredJobs.filter(job => {
+            if(job.salary <= filterSalaryEnd && job.salary >= filterSalaryStart && job.duration <= durationFilter){
+                return true;
+            }
+            else return false;
+        })
+        // if(type === 'salary'){
+        //     filteredJobs = [...jobs].filter(job => {
+        //         if(job.salary <= filterSalaryEnd && job.salary >= filterSalaryStart && job.type === typeFilter){
+        //             return true
+        //         } else{
+        //             return false
+        //         }
+        //     })
+        // }else if(type === "none"){
+        //     filteredJobs = [...jobs]
+        // }else{
+        //     filteredJobs = [...jobs].filter(job => {
+        //     return job.type.includes(type)
+        // })}
+        setJobsForSearch(filteredJobs)
+    }
+    const handlefilterType = type => {
+        setFilterType(type)
+    }
+
+    const handleFilterSalaryStart = val => {
+        setFilterSalaryStart(val)
+    }
+
+    const handleFilterSalaryEnd = val => {
+        setFilterSalaryEnd(val)
+    }
+
+    const handleDurationFilter = (duration) => {
+        setDurationFilter(duration)
+    }
+
+    const clearFilters = () => {
+        setJobsForSearch(jobs)
+    }
+
+
     const BarStyling = {width:"20rem",background:"#F2F1F9", border:"none", padding:"0.5rem"};
     return (
         <div className = "box">
@@ -142,6 +202,33 @@ function ApplicantVisit(){
                                 <option value="descending">Descending</option>
                             </select>
                             <br/><br/>
+                            <div onChange={(e) => handlefilterType(e.target.value)}>
+                                <Label style={{marginRight:'40px'}}>Filter:</Label>
+                                <input type="radio" value="Full-time" name="type" /> Full Time
+                                <input type="radio" value="Part-time" name="type" /> Part Time
+                                <input type="radio" value="Work-from-home" name="type" /> Work form Home
+                                <input type="radio" value="none" name="type" /> None
+                            </div>
+                            <br/>
+                            <Label style = {{marginRight:'40px'}}>Salary Range:</Label>
+                            <div>
+                                <input type="number" placeholder="Start Range" onChange={(e) => handleFilterSalaryStart(e.target.value)} style = {{marginRight:'40px'}}/>
+                                <input type="number" placeholder="EndRange" onChange={(e) => handleFilterSalaryEnd(e.target.value)}/>
+                            </div>
+                            <br/>
+                            <Label style = {{marginRight:'40px'}}>Duration (in Months)</Label>
+                            <select onChange={(e) => handleDurationFilter(e.target.value)}>
+                                <option value="1" >1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7" selected>7</option>
+                            </select>
+                            <br/><br/>
+                            <Button onClick={applyAllFilters} style = {{marginRight:'40px', backgroundColor:'green'}}>Apply Filters</Button> 
+                            <Button onClick={clearFilters}>Clear Filters</Button><br/><br/>
                             { applicationLimit ? <div><h1 style={{color: "red"}}> Limit of Applications Reached </h1></div> : null }
                             <table style={{ border: '1px solid black', width: '90%' }}>
                                 <tbody>
@@ -181,10 +268,14 @@ function ApplicantVisit(){
                                                             <td>{job.salary}</td>
                                                             <td>{job.duration}</td>
                                                             <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
-                                                            <td>
-                                                            <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
-                                                            { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
-                                                            </td>
+                                                            {
+                                                                job.pending_applicants.length >= job.application_no || job.accepted_applicants.length >= job.positions_no 
+                                                                ? <td><Button style={{ color: "red", backgroundColor:"white" }} >Full</Button></td>
+                                                                : <td>
+                                                                    <Button style={{ backgroundColor:'green'}} onClick={callEditing.bind(this, index)} >Apply</Button>
+                                                                    { isApplying && isApplyingIndex===index ? <AddSopApply job={job} reload={reloadJobs} />  : null}
+                                                                </td>
+                                                            }
                                                         </tr>)
                                                 : null
 
