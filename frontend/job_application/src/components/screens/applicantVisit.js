@@ -139,20 +139,6 @@ function ApplicantVisit(){
             }
             else return false;
         })
-        // if(type === 'salary'){
-        //     filteredJobs = [...jobs].filter(job => {
-        //         if(job.salary <= filterSalaryEnd && job.salary >= filterSalaryStart && job.type === typeFilter){
-        //             return true
-        //         } else{
-        //             return false
-        //         }
-        //     })
-        // }else if(type === "none"){
-        //     filteredJobs = [...jobs]
-        // }else{
-        //     filteredJobs = [...jobs].filter(job => {
-        //     return job.type.includes(type)
-        // })}
         setJobsForSearch(filteredJobs)
     }
     const handlefilterType = type => {
@@ -181,6 +167,9 @@ function ApplicantVisit(){
         <div className = "box">
             <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
                 <center>
+                    <Link to={{pathname:'/myApplication', state:{ jobs: jobs, applications: applicantApplications }}}>
+                        <Button style={{backgroundColor:'maroon'}}>My Applications</Button><br/><br/>
+                    </Link>
                     <Form>
                         <FormGroup>
                             <Label style={{marginRight:'40px'}}>Search:</Label>

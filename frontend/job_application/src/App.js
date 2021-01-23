@@ -11,6 +11,7 @@ import ApplicantEdit from './components/screens/applicantEdit'
 import AddJob from './components/screens/addJob'
 import ViewJobs from './components/screens/viewJob'
 import AddSopApply from './components/screens/addSopApply'
+import MyApplication from './components/screens/myApplications'
 
 class App extends Component {
   componentDidMount() {
@@ -27,6 +28,7 @@ class App extends Component {
               <Route path="/addJob" component={AddJob}/>
               <Route path="/viewJob" component={ViewJobs}/>
               <Route path="/applyJob" component={AddSopApply}/>
+              <Route path="/myApplication" component={MyApplication}/>
             <AppNavbar/>
           </div>
         </Provider>
