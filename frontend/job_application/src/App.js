@@ -12,6 +12,7 @@ import AddJob from './components/screens/addJob'
 import ViewJobs from './components/screens/viewJob'
 import AddSopApply from './components/screens/addSopApply'
 import MyApplication from './components/screens/myApplications'
+import RecruiterApplicationView from './components/screens/recruiterApplicationView'
 
 class App extends Component {
   componentDidMount() {
@@ -29,6 +30,7 @@ class App extends Component {
               <Route path="/viewJob" component={ViewJobs}/>
               <Route path="/applyJob" component={AddSopApply}/>
               <Route path="/myApplication" component={MyApplication}/>
+              <Route path="/recruiterApplication" component={RecruiterApplicationView}></Route>
             <AppNavbar/>
           </div>
         </Provider>
