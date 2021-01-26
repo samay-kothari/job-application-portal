@@ -75,5 +75,17 @@ router.post('/getApplicantJob', (req, res) => {
         )
 })
 
+router.post('/getRecruiterApplications', (req, res) => {
+    const { recruiter_email } = req.body
+    console.log(recruiter_email)
+    const filter = { recruiter_email: recruiter_email }
+    JobApp.find(filter)
+        .then(
+            data => {
+                if(!data) return res.status(400).json({ msg:'Can get Applications for this recruiter' })
+                res.json({data})
+            }
+        )
+})
 
 module.exports = router

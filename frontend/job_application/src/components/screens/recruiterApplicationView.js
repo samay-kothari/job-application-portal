@@ -218,7 +218,7 @@ function RecruiterApplicationView (props){
                 }
             )
 
-        update = { status: 'Accepted' }
+        update = { status: 'Accepted', date_of_posting: moment().format() }
         together = { _id: application._id, update: update }
         body = JSON.stringify({together})
 
@@ -239,7 +239,7 @@ function RecruiterApplicationView (props){
     }
 
     return (
-        <div class="box">
+        <div className="box">
             <center>
                 <div style={{marginTop:'30px'}}>
                     <Label style={{marginInline:'6px'}}>Sort Options:</Label>

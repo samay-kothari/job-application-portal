@@ -98,19 +98,21 @@ class ViewJobs extends Component {
                         <Form>
                             { this.state.jobs != null ? this.state.jobs.map((job, index) =>
                                 // { return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) ? 
-                                <div style={{ backgroundColor:'white', marginBottom:'20px', padding:'10px', width:'40%' }}>
-                                    <Form>
-                                        <Label>Title: {job.title}</Label><br/>
-                                        <Label>Date of Posting: <Moment format="YYYY-MM-DD">{job.date_of_posting}</Moment></Label><br/>
-                                        <Label>Number of Applicants: {job.pending_applicants.length}</Label><br/>
-                                        <Label>Remaining Positions: {job.positions_no - job.accepted_applicants.length}</Label>
-                                    </Form>
-                                    <Link to={{pathname:'/recruiterApplication', state: {job: job}}}>
-                                        <Button style={{marginRight:'20px'}}>View Applications</Button>
-                                    </Link>
-                                    <Button onClick={this.editJob.bind(this, index)}>Edit</Button>
-                                    { this.state.isEditing && index===this.state.editingIndex ? <EditJobModal job = {job} parentRefresh={this.refresh}/> : null}
-                                </div>
+                                {return job.accepted_applicants.length < job.positions_no ?
+                                    <div style={{ backgroundColor:'white', marginBottom:'20px', padding:'10px', width:'40%' }}>
+                                        <Form>
+                                            <Label>Title: {job.title}</Label><br/>
+                                            <Label>Date of Posting: <Moment format="YYYY-MM-DD">{job.date_of_posting}</Moment></Label><br/>
+                                            <Label>Number of Applicants: {job.pending_applicants.length}</Label><br/>
+                                            <Label>Remaining Positions: {job.positions_no - job.accepted_applicants.length}</Label>
+                                        </Form>
+                                        <Link to={{pathname:'/recruiterApplication', state: {job: job}}}>
+                                            <Button style={{marginRight:'20px'}}>View Applications</Button>
+                                        </Link>
+                                        <Button onClick={this.editJob.bind(this, index)}>Edit</Button>
+                                        { this.state.isEditing && index===this.state.editingIndex ? <EditJobModal job = {job} parentRefresh={this.refresh}/> : null}
+                                    </div> : null
+                                }
                             ) : null }
                         </Form>
                     </center>

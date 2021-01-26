@@ -233,7 +233,7 @@ function ApplicantVisit(){
                                     {
                                         jobsForSearch != null ? jobsForSearch.map((job, index) => {
                                             {
-                                                return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) 
+                                                return moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid && moment().isBefore(moment(job.deadline, 'YYYY-MM-DDTHH:mm:ss.SSSZ')) && job.accepted_applicants.length < job.positions_no
                                                 ? handleCheck(job) 
                                                     ?   applicantApplications!= null 
                                                         ? applicantApplications.map((item, index) => {
@@ -253,7 +253,7 @@ function ApplicantVisit(){
                                                     :  (<tr>
                                                             <td>{job.title}</td>
                                                             <td>{job.name}</td>
-                                                            <td>{ job.number_of_ratings!=0 ? job.ratings_sum/job.number_of_ratings : 0}</td>
+                                                            <td>{ job.number_of_ratings!=0 ? job.rating_sum/job.number_of_ratings : 0}</td>
                                                             <td>{job.salary}</td>
                                                             <td>{job.duration}</td>
                                                             <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>

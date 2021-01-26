@@ -80,36 +80,41 @@ class RecruiterVisit extends Component {
                 {/* <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
                     <h1 style={{ color:'white'}}>Welcome Recruiter</h1>
                 </div> */}
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
-                    <FormGroup>
-                        <Form>
-                            <Label>Name:</Label><br/>
-                            <h2>{this.state.name}</h2><br/>
-                            <Label>Email:</Label><br/>
-                            <h2>{this.state.email}</h2><br/>
-                            <Label>Contact Number:</Label>
-                            <input type="textarea" 
-                                name="contact_number" id="contact_number"
-                                onChange={this.onChange
-                                } value={this.state.contact_number}
-                                /><br/>
-                            <Label>Bio:</Label><br/>
-                            <textarea type="textarea" 
-                                name="bio" id="bio"
-                                onChange={this.onChange
-                                }
-                                value={this.state.bio}
-                                /><br/>
-                            <Button color = "light" style={{marginTop: '2rem'}} onClick={this.updateData}>Update</Button>
-                        </Form>
-                        <Link to="/addJob">
-                            <Button color="dark" style={{marginTop: '2rem', marginRight:'5rem'}}>Add New Job</Button>
-                        </Link>
-                        <Link to="/viewJob">
-                            <Button color="dark" style={{marginTop: '2rem' }}>View posted jobs</Button>
-                        </Link>
-                    </FormGroup>
-                </div>
+                <center>
+                    <div style={{height: '200%', marginTop:'10%'}}>
+                        <FormGroup>
+                            <Form>
+                                <Label>Name:</Label><br/>
+                                <h2>{this.state.name}</h2><br/>
+                                <Label>Email:</Label><br/>
+                                <h2>{this.state.email}</h2><br/>
+                                <Label>Contact Number:</Label>
+                                <input type="textarea" 
+                                    name="contact_number" id="contact_number"
+                                    onChange={this.onChange
+                                    } value={this.state.contact_number}
+                                    /><br/>
+                                <Label>Bio:</Label><br/>
+                                <textarea type="textarea" 
+                                    name="bio" id="bio"
+                                    onChange={this.onChange
+                                    }
+                                    value={this.state.bio}
+                                    /><br/>
+                                <Button color = "light" style={{marginTop: '2rem'}} onClick={this.updateData}>Update</Button>
+                            </Form>
+                            <Link to="/addJob">
+                                <Button color="dark" style={{marginTop: '2rem', marginRight:'5rem'}}>Add New Job</Button>
+                            </Link>
+                            <Link to="/viewJob">
+                                <Button color="dark" style={{marginTop: '2rem', marginRight:'5rem'}}>View posted jobs</Button>
+                            </Link>
+                            <Link to="/recruiterEmployees">
+                                    <Button color="dark" style={{marginTop: '2rem' }}>Employees</Button>
+                            </Link>
+                        </FormGroup>
+                    </div>
+                </center>
             </div>
         )
     }

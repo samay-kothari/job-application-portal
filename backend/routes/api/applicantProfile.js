@@ -50,7 +50,6 @@ router.post('/update', (req, res) => {
             .catch(err => res.status(500).json({success: fail})))
         .catch(err => res.status(404).json({success: false}));
 
-
     // ApplicantProfile.findByIdAndUpdate(_id, applicantProfile, function(err, applicantProfile){
     //     if(err){
     //         console.log("err", err);
@@ -60,6 +59,18 @@ router.post('/update', (req, res) => {
     //         res.send(applicantProfile);
     //     }
     // })
+})
+
+router.post('/ratingsUpdate', (req, res) => {
+    const { _id, update } = req.body
+    const filter = { _id: _id }
+    ApplicantProfile.findByIdAndUpdate(filter, update)
+        .then(
+            data => {
+                res.json(data)
+            }
+        )
+        .catch(err => res.status(404).json(`${err}`));
 })
 
 module.exports = router;
