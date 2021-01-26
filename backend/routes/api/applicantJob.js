@@ -40,6 +40,7 @@ router.post('/getApplicantApplications', (req, res) => {
 })
 
 router.post('/updateJobData', (req, res) => {
+    console.log(req.body.together)
     const { _id, update } = req.body.together;
     const filter = { _id: _id }
     Jobs.findByIdAndUpdate(filter, update)

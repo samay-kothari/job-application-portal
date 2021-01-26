@@ -28,18 +28,20 @@ function AddSopApply(props){
             sop: Sop,
             status: 'Applied'
         }
+        var idOfTheApplication
         const { job_id ,job_title ,applicant_name ,applicant_email ,recruiter_name ,recruiter_email , date_of_posting, sop, status } = jobapplication
         var body = JSON.stringify({job_id ,job_title ,applicant_name ,applicant_email ,recruiter_name ,recruiter_email , date_of_posting, sop, status})
         await axios.post('/api/applicantJob/postApplication/', body, config)
             .then( res=> {
                 setApplication_id(res.data.applicationData._id)
+                idOfTheApplication = res.data.applicationData._id
                 console.log(`${application_ID}`)
             } )
             .catch( err=> {
                 console.log(`${err}`)
             })
         var job_applicants = job.pending_applicants;
-        job_applicants = job_applicants.concat([[ application_ID ,localStorage.getItem('email'), localStorage.getItem('name')]])
+        job_applicants = job_applicants.concat([[ idOfTheApplication ,localStorage.getItem('email'), localStorage.getItem('name')]])
         const update = { pending_applicants: job_applicants }
         const together = { _id: job._id, update: update }
         body =  JSON.stringify({together})

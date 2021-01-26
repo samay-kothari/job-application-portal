@@ -237,7 +237,7 @@ function ApplicantVisit(){
                                                 ? handleCheck(job) 
                                                     ?   applicantApplications!= null 
                                                         ? applicantApplications.map((item, index) => {
-                                                            return job._id === item.job_id && item.status!="Rejected" ? (
+                                                            return job._id === item.job_id && item.status!="Rejected" && item.status!="Accepted" ? (
                                                             <tr>
                                                                 <td>{job.title}</td>
                                                                 <td>{job.name}</td>
@@ -245,7 +245,7 @@ function ApplicantVisit(){
                                                                 <td>{job.salary}</td>
                                                                 <td>{job.duration}</td>
                                                                 <td>{moment(job.deadline).format("YYYY-MM-DD")}</td>
-                                                                {item.status === "Applied" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> : null}
+                                                                {item.status === "Applied" || item.status === "Shortlisted" ? <td><Button style={{ color: "black", backgroundColor:"white" }} >{item.status}</Button></td> : null}
                                                             </tr> 
                                                             ) : null
                                                         }) 
