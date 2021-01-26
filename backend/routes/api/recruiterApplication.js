@@ -88,4 +88,26 @@ router.post('/getRecruiterApplications', (req, res) => {
         )
 })
 
+router.post('/deleteJobApplications', (req, res) => {
+    const { job_id } = req.body
+    const filter = { job_id: job_id }
+    JobApp.deleteMany(filter)
+        .then(
+            data => {
+                res.json({data})
+            }
+        )
+})
+
+router.post('/deleteJob', (req, res) => {
+    const { _id } = req.body
+    const filter = { _id: _id }
+    Job.deleteOne(filter)
+        .then(
+            data => {
+                res.json({data})
+            }
+        )
+})
+
 module.exports = router
